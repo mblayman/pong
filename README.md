@@ -16,3 +16,4 @@ An attempt at pong with the LOVE engine
 * [ ] menu
 * [ ] sounds
 * [ ] sprites
+* [ ] winning conditions
