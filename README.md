@@ -4,7 +4,7 @@ An attempt at pong with the LOVE engine
 
 ## Things to make
 
-* [ ] a background with middle dividing line
+* [x] a background with middle dividing line
 * [ ] ball
 * [ ] left paddle
 * [ ] right paddle
