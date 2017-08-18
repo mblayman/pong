@@ -2,5 +2,9 @@
 -- is mocked out. Imperfect, but it works enough.
 love = {
   keyboard = {
+  },
+  graphics = {
+    getWidth = function() return 800 end,
+    getHeight = function() return 600 end
   }
 }

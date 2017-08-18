@@ -2,10 +2,15 @@
 local Ball = {}
 Ball.__index = Ball
 
+-- States
+Ball.READY_STATE = 1
+
 local RADIUS = 32
 
 local function construct()
   local self = setmetatable({}, Ball)
+
+  self.state = Ball.READY_STATE
 
   -- Start the ball in the middle of the court.
   self.x = love.graphics.getWidth() / 2
