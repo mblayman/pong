@@ -26,7 +26,33 @@ describe('Ball', function()
     assert.are.equal(Constants.RIGHT, ball.x_direction)
   end)
 
-  it('has default y direction')
+  it('has default x speed', function()
+    local ball = Ball()
+
+    assert.are.equal(0, ball.x_speed)
+  end)
+
+
+  it('has default y direction', function()
+    local ball = Ball()
+
+    assert.are.equal(Constants.DOWN, ball.y_direction)
+  end)
+
+  it('has default y speed', function()
+    local ball = Ball()
+
+    assert.are.equal(0, ball.y_speed)
+  end)
+
+  it('sets speeds', function()
+    local ball = Ball()
+
+    ball:set_speeds()
+
+    assert.are_not.equal(0, ball.x_speed)
+    assert.are_not.equal(0, ball.y_speed)
+  end)
 
   describe('on start', function()
     local key_state = { start = true }
@@ -55,6 +81,7 @@ describe('Ball', function()
     it('updates x', function()
       local ball = Ball()
       ball.x = 200
+      ball.x_speed = 128
       ball.x_direction = Constants.LEFT
       ball.state = Ball.MOVING_STATE
 
