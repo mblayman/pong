@@ -1,10 +1,20 @@
-local Ball = require 'entities.ball'
-local KeyState = require 'key_state'
+local Ball = require 'pong.entities.ball'
+local KeyState = require 'pong.key_state'
 
 local entities = {}
 local key_state = KeyState()
 
+-- Lua's random number generator doesn't have enough entropy to start.
+-- Without some initial calls, the first random is always the same.
+local function initRandom()
+  math.randomseed(os.time())
+  math.random()
+  math.random()
+  math.random()
+end
+
 function love.load()
+  initRandom()
   entities.ball = Ball()
 end
 
