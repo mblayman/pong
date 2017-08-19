@@ -1,4 +1,5 @@
 local Ball = require 'pong.entities.ball'
+local Paddle = require 'pong.entities.paddle'
 local KeyState = require 'pong.key_state'
 
 local entities = {}
@@ -16,6 +17,10 @@ end
 function love.load()
   initRandom()
   entities.ball = Ball()
+  local paddle_y = love.graphics.getHeight() / 2 - Paddle.HEIGHT / 2
+  entities.left_paddle = Paddle(0, paddle_y)
+  local right_paddle_x = love.graphics.getWidth() - Paddle.WIDTH
+  entities.right_paddle = Paddle(right_paddle_x, paddle_y)
 end
 
 -- Update the state of the world.
