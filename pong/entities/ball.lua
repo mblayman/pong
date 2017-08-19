@@ -1,4 +1,5 @@
 local Constants = require 'pong.constants'
+local Court = require 'pong.court'
 
 -- The ball that bounces back and forth.
 local Ball = {}
@@ -60,11 +61,9 @@ end
 function Ball:update_collide_vertical()
   local bbox = self:get_bbox()
 
-  -- TODO: get the top from a non-hardcoded value
-  if bbox.y <= 0 then
+  if bbox.y <= Court.TOP then
     self.y_direction = self.y_direction * Constants.REVERSE
-  -- TODO: get the bottom from a non-hardcoded value
-  elseif bbox.y + bbox.h >= love.graphics.getHeight() then
+  elseif bbox.y + bbox.h >= Court.BOTTOM then
     self.y_direction = self.y_direction * Constants.REVERSE
   end
 
