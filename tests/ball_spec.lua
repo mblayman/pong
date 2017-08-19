@@ -54,6 +54,39 @@ describe('Ball', function()
     assert.are_not.equal(0, ball.y_speed)
   end)
 
+  it('gets a bounding box', function()
+    local ball = Ball()
+    ball.x = 100
+    ball.y = 200
+
+    bbox = ball:get_bbox()
+
+    assert.are.equal(100 - Ball.RADIUS, bbox.x)
+    assert.are.equal(200 - Ball.RADIUS, bbox.y)
+    assert.are.equal(Ball.DIAMETER, bbox.h)
+    assert.are.equal(Ball.DIAMETER, bbox.w)
+  end)
+
+  it('reverses at the top', function()
+    local ball = Ball()
+    ball.y = 0
+    ball.y_direction = Constants.UP
+
+    ball:update_collide_vertical()
+
+    assert.are.equal(Constants.DOWN, ball.y_direction)
+  end)
+
+  it('reverses at the bottom', function()
+    local ball = Ball()
+    ball.y = love.graphics.getHeight()
+    ball.y_direction = Constants.DOWN
+
+    ball:update_collide_vertical()
+
+    assert.are.equal(Constants.UP, ball.y_direction)
+  end)
+
   describe('on start', function()
     local key_state = { start = true }
 

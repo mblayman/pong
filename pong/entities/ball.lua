@@ -8,7 +8,8 @@ Ball.__index = Ball
 Ball.READY_STATE = 1
 Ball.MOVING_STATE = 2
 
-local RADIUS = 32
+Ball.RADIUS = 32
+Ball.DIAMETER = Ball.RADIUS * 2 -- For boundary box calculation
 local SPEED = 128
 
 -- Use a set of angles to keep the game interesting.
@@ -48,10 +49,35 @@ function Ball:update(dt, key_state)
     end
 
   elseif self.state == Ball.MOVING_STATE then
+    self:update_collide_vertical()
+
     self.x = self.x + self.x_speed * self.x_direction * dt
     self.y = self.y + self.y_speed * self.y_direction * dt
-
   end
+end
+
+-- Update if the ball collides with the top or bottom.
+function Ball:update_collide_vertical()
+  local bbox = self:get_bbox()
+
+  -- TODO: get the top from a non-hardcoded value
+  if bbox.y <= 0 then
+    self.y_direction = self.y_direction * Constants.REVERSE
+  -- TODO: get the bottom from a non-hardcoded value
+  elseif bbox.y + bbox.h >= love.graphics.getHeight() then
+    self.y_direction = self.y_direction * Constants.REVERSE
+  end
+
+end
+
+-- Get the boundary box.
+function Ball:get_bbox()
+  return {
+    x = self.x - Ball.RADIUS,
+    y = self.y - Ball.RADIUS,
+    h = Ball.DIAMETER,
+    w = Ball.DIAMETER,
+  }
 end
 
 -- Set x and y speeds to produce a given angle for the ball.
@@ -62,7 +88,7 @@ function Ball:set_speeds()
 end
 
 function Ball:draw()
-  love.graphics.circle('fill', self.x, self.y, RADIUS)
+  love.graphics.circle('fill', self.x, self.y, Ball.RADIUS)
 end
 
 return Ball
