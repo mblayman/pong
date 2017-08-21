@@ -12,14 +12,26 @@ describe('Paddle', function()
   end)
 
   it('is given x', function()
-    local paddle = Paddle(1, 2)
+    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down')
 
     assert.are.equal(1, paddle.x)
   end)
 
   it('is given y', function()
-    local paddle = Paddle(1, 2)
+    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down')
 
     assert.are.equal(2, paddle.y)
+  end)
+
+  it('is given an up key', function()
+    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down')
+
+    assert.are.equal('left_player_up', paddle.up_key)
+  end)
+
+  it('is given a down key', function()
+    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down')
+
+    assert.are.equal('left_player_down', paddle.down_key)
   end)
 end)
