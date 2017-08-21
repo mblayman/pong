@@ -1,6 +1,7 @@
 require 'tests.love_mock'
 
 local Constants = require 'pong.constants'
+local Court = require 'pong.court'
 local Paddle = require 'pong.entities.paddle'
 
 describe('Paddle', function()
@@ -66,5 +67,29 @@ describe('Paddle', function()
 
     assert.are.equal(Constants.DOWN, paddle.y_direction)
     assert.is_true(paddle.y > 2)
+  end)
+
+  it('gets the boundary box', function()
+    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down')
+
+    local bbox = paddle:get_bbox()
+
+    assert.are.equal(1, bbox.x)
+    assert.are.equal(2, bbox.y)
+    assert.are.equal(Paddle.HEIGHT, bbox.h)
+    assert.are.equal(Paddle.WIDTH, bbox.w)
+  end)
+
+  it('collides with the top of the court', function()
+    local paddle = Paddle(1, -2, 'left_player_up', 'left_player_down')
+
+    assert.is_true(paddle:collide_top())
+  end)
+
+  it('collides with the bottom of the court', function()
+    local paddle = Paddle(
+      1, Court.BOTTOM - Paddle.HEIGHT + 1, 'left_player_up', 'left_player_down')
+
+    assert.is_true(paddle:collide_bottom())
   end)
 end)
