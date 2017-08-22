@@ -8,6 +8,7 @@ Ball.__index = Ball
 -- States
 Ball.READY_STATE = 1
 Ball.MOVING_STATE = 2
+Ball.SCORING_STATE = 3
 
 Ball.RADIUS = 32
 Ball.DIAMETER = Ball.RADIUS * 2 -- For bounding box calculation
@@ -52,26 +53,46 @@ function Ball:update(dt, key_state)
     end
 
   elseif self.state == Ball.MOVING_STATE then
-    self:update_collide_paddles()
+    if self:collide_paddles() then
+      self.x_direction = self.x_direction * Constants.REVERSE
+    elseif self:collide_goals() then
+      self.state = Ball.SCORING_STATE
+    end
+
     self:update_collide_vertical()
 
     self.x = self.x + self.x_speed * self.x_direction * dt
     self.y = self.y + self.y_speed * self.y_direction * dt
+
+  elseif self.state == Ball.SCORING_STATE then
+    self:update_collide_vertical()
+
+    self.x = self.x + self.x_speed * self.x_direction * dt
+    self.y = self.y + self.y_speed * self.y_direction * dt
+
   end
 end
 
--- Update if the ball collides with a paddle.
-function Ball:update_collide_paddles()
-  local collided = false
+-- Check if the ball collides with a paddle.
+function Ball:collide_paddles()
   for i, paddle in pairs(self.scene.paddles) do
     if self:collide_box(paddle:get_bbox()) then
-      collided = true
+      return true
     end
   end
 
-  if collided then
-    self.x_direction = self.x_direction * Constants.REVERSE
+  return false
+end
+
+-- Check if the ball collides with a goal.
+function Ball:collide_goals()
+  for i, goal in pairs(self.scene.goals) do
+    if self:collide_box(goal:get_bbox()) then
+      return true
+    end
   end
+
+  return false
 end
 
 -- Update if the ball collides with the top or bottom.

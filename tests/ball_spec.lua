@@ -1,6 +1,7 @@
 require 'tests.love_mock'
 
 local Constants = require 'pong.constants'
+local Goal = require 'pong.goal'
 local Scene = require 'pong.scene'
 local Ball = require 'pong.entities.ball'
 local Paddle = require 'pong.entities.paddle'
@@ -14,6 +15,10 @@ describe('Ball', function()
 
   it('has a moving state', function()
     assert.truthy(Ball.MOVING_STATE)
+  end)
+
+  it('has a scoring state', function()
+    assert.truthy(Ball.SCORING_STATE)
   end)
 
   it('gets a scene', function()
@@ -156,6 +161,35 @@ describe('Ball', function()
       ball:update(dt, {})
 
       assert.are.equal(Constants.RIGHT, ball.x_direction)
+    end)
+
+    it('scores a goal', function()
+      local goal = Goal(0, 0, love.graphics.getHeight())
+      local scene = Scene()
+      scene:add_goal(goal)
+      local ball = Ball(scene)
+      ball.x = 0
+      ball.y = 0
+      ball.state = Ball.MOVING_STATE
+
+      ball:update(dt, {})
+
+      assert.are.equal(Ball.SCORING_STATE, ball.state)
+    end)
+  end)
+
+  describe('while scoring', function()
+    it('updates x', function()
+      local scene = Scene()
+      local ball = Ball(scene)
+      ball.x = 200
+      ball.x_speed = 128
+      ball.x_direction = Constants.LEFT
+      ball.state = Ball.SCORING_STATE
+
+      ball:update(dt, {})
+
+      assert.are.equal(72, ball.x)
     end)
   end)
 end)

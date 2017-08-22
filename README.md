@@ -8,7 +8,8 @@ An attempt at pong with the LOVE engine
 * [x] ball
 * [x] left paddle
 * [x] right paddle
-* [ ] goals
+* [x] goals
+* [ ] restarts after point
 * [ ] scoreboard
 
 ## Extra stuff to try

@@ -1,7 +1,8 @@
-local Ball = require 'pong.entities.ball'
-local Paddle = require 'pong.entities.paddle'
+local Goal = require 'pong.goal'
 local KeyState = require 'pong.key_state'
 local Scene = require 'pong.scene'
+local Ball = require 'pong.entities.ball'
+local Paddle = require 'pong.entities.paddle'
 
 local entities = {}
 local key_state = KeyState()
@@ -16,6 +17,13 @@ local function init_random()
   math.random()
 end
 
+-- Make the left and right goals.
+local function make_goals()
+  local height = love.graphics.getHeight()
+  local right_goal_x = love.graphics.getWidth() - Goal.WIDTH
+  return Goal(0, 0, height), Goal(right_goal_x, 0, height)
+end
+
 -- Make the left and right paddles.
 local function make_paddles()
   local paddle_y = love.graphics.getHeight() / 2 - Paddle.HEIGHT / 2
@@ -26,6 +34,10 @@ end
 
 function love.load()
   init_random()
+
+  left_goal, right_goal = make_goals()
+  scene:add_goal(left_goal)
+  scene:add_goal(right_goal)
 
   entities.left_paddle, entities.right_paddle = make_paddles()
   scene:add_paddle(entities.left_paddle)
