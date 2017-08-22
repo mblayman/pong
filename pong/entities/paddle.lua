@@ -49,7 +49,7 @@ function Paddle:collide_bottom()
   return bbox.y + bbox.h >= Court.BOTTOM
 end
 
--- Get the boundary box.
+-- Get the bounding box.
 function Paddle:get_bbox()
   return {
     x = self.x,

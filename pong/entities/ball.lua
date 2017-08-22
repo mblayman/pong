@@ -10,7 +10,7 @@ Ball.READY_STATE = 1
 Ball.MOVING_STATE = 2
 
 Ball.RADIUS = 32
-Ball.DIAMETER = Ball.RADIUS * 2 -- For boundary box calculation
+Ball.DIAMETER = Ball.RADIUS * 2 -- For bounding box calculation
 local SPEED = 128
 
 -- Use a set of angles to keep the game interesting.
@@ -100,7 +100,7 @@ function Ball:collide_box(other_bbox)
   )
 end
 
--- Get the boundary box.
+-- Get the bounding box.
 function Ball:get_bbox()
   return {
     x = self.x - Ball.RADIUS,

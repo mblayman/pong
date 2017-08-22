@@ -69,7 +69,7 @@ describe('Paddle', function()
     assert.is_true(paddle.y > 2)
   end)
 
-  it('gets the boundary box', function()
+  it('gets the bounding box', function()
     local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down')
 
     local bbox = paddle:get_bbox()
