@@ -14,6 +14,13 @@ describe('Ball', function()
     assert.truthy(Ball.MOVING_STATE)
   end)
 
+  it('gets a scene', function()
+    local scene = {}
+    local ball = Ball(scene)
+
+    assert.equal(scene, ball.scene)
+  end)
+
   it('starts at ready', function()
     local ball = Ball()
 

@@ -23,8 +23,10 @@ local ANGLES = {
   1 / 3, -- 60
 }
 
-local function construct()
+local function construct(cls, scene)
   local self = setmetatable({}, Ball)
+
+  self.scene = scene
 
   self.state = Ball.READY_STATE
 

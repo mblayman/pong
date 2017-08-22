@@ -1,28 +1,37 @@
 local Ball = require 'pong.entities.ball'
 local Paddle = require 'pong.entities.paddle'
 local KeyState = require 'pong.key_state'
+local Scene = require 'pong.scene'
 
 local entities = {}
 local key_state = KeyState()
+local scene = Scene()
 
 -- Lua's random number generator doesn't have enough entropy to start.
 -- Without some initial calls, the first random is always the same.
-local function initRandom()
+local function init_random()
   math.randomseed(os.time())
   math.random()
   math.random()
   math.random()
 end
 
-function love.load()
-  initRandom()
-  entities.ball = Ball()
+-- Make the left and right paddles.
+local function make_paddles()
   local paddle_y = love.graphics.getHeight() / 2 - Paddle.HEIGHT / 2
-  entities.left_paddle = Paddle(
-    0, paddle_y, 'left_player_up', 'left_player_down')
   local right_paddle_x = love.graphics.getWidth() - Paddle.WIDTH
-  entities.right_paddle = Paddle(
-    right_paddle_x, paddle_y, 'right_player_up', 'right_player_down')
+  return Paddle(0, paddle_y, 'left_player_up', 'left_player_down'),
+         Paddle(right_paddle_x, paddle_y, 'right_player_up', 'right_player_down')
+end
+
+function love.load()
+  init_random()
+
+  entities.left_paddle, entities.right_paddle = make_paddles()
+  scene:add_paddle(entities.left_paddle)
+  scene:add_paddle(entities.right_paddle)
+
+  entities.ball = Ball(scene)
 end
 
 -- Update the state of the world.
