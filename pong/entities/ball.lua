@@ -52,10 +52,25 @@ function Ball:update(dt, key_state)
     end
 
   elseif self.state == Ball.MOVING_STATE then
+    self:update_collide_paddles()
     self:update_collide_vertical()
 
     self.x = self.x + self.x_speed * self.x_direction * dt
     self.y = self.y + self.y_speed * self.y_direction * dt
+  end
+end
+
+-- Update if the ball collides with a paddle.
+function Ball:update_collide_paddles()
+  local collided = false
+  for i, paddle in pairs(self.scene.paddles) do
+    if self:collide_box(paddle:get_bbox()) then
+      collided = true
+    end
+  end
+
+  if collided then
+    self.x_direction = self.x_direction * Constants.REVERSE
   end
 end
 
@@ -69,6 +84,20 @@ function Ball:update_collide_vertical()
     self.y_direction = self.y_direction * Constants.REVERSE
   end
 
+end
+
+-- Check if the ball collided with another bounding box.
+function Ball:collide_box(other_bbox)
+  local bbox = self:get_bbox()
+  -- Each test checks if the box is outside the other box.
+  -- The whole thing is negated because if the box is not
+  -- outside of the other box, then it must be a collision.
+  return not (
+    bbox.x > other_bbox.x + other_bbox.w or
+    bbox.x + bbox.w < other_bbox.x or
+    bbox.y > other_bbox.y + other_bbox.h or
+    bbox.y + bbox.h < other_bbox.y
+  )
 end
 
 -- Get the boundary box.

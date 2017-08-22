@@ -1,7 +1,9 @@
 require 'tests.love_mock'
 
 local Constants = require 'pong.constants'
+local Scene = require 'pong.scene'
 local Ball = require 'pong.entities.ball'
+local Paddle = require 'pong.entities.paddle'
 
 describe('Ball', function()
   local dt = 1
@@ -94,6 +96,16 @@ describe('Ball', function()
     assert.are.equal(Constants.UP, ball.y_direction)
   end)
 
+  it('collides with another box', function()
+    local paddle = Paddle(0, 0)
+    local ball = Ball()
+    ball.x = 0
+    ball.y = 0
+
+    local collided = ball:collide_box(paddle:get_bbox())
+    assert.is_true(collided)
+  end)
+
   describe('on start', function()
     local key_state = { start = true }
 
@@ -119,7 +131,8 @@ describe('Ball', function()
 
   describe('while moving', function()
     it('updates x', function()
-      local ball = Ball()
+      local scene = Scene()
+      local ball = Ball(scene)
       ball.x = 200
       ball.x_speed = 128
       ball.x_direction = Constants.LEFT
@@ -128,6 +141,21 @@ describe('Ball', function()
       ball:update(dt, {})
 
       assert.are.equal(72, ball.x)
+    end)
+
+    it('reverses against a paddle', function()
+      local paddle = Paddle(0, 0)
+      local scene = Scene()
+      scene:add_paddle(paddle)
+      local ball = Ball(scene)
+      ball.x = 0
+      ball.y = 0
+      ball.x_direction = Constants.LEFT
+      ball.state = Ball.MOVING_STATE
+
+      ball:update(dt, {})
+
+      assert.are.equal(Constants.RIGHT, ball.x_direction)
     end)
   end)
 end)
