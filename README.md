@@ -15,6 +15,7 @@ An attempt at pong with the LOVE engine
 ## Extra stuff to try
 
 * [ ] splash menu
+* [ ] pause menu
 * [ ] menu
 * [ ] sounds
 * [ ] sprites
