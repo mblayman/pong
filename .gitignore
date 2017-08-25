@@ -41,3 +41,7 @@ luac.out
 
 # Vim
 *.sw*
+
+# Vendor
+vendor
+!vendor/.gitkeep
