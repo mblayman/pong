@@ -1,6 +1,7 @@
 local Gamestate = require 'pong.vendor.hump.gamestate'
 
 local Ingame = require 'pong.gamestates.ingame'
+local Pause = require 'pong.gamestates.pause'
 
 -- Lua's random number generator doesn't have enough entropy to start.
 -- Without some initial calls, the first random is always the same.
@@ -15,4 +16,10 @@ function love.load()
   init_random()
   Gamestate.registerEvents()
   Gamestate.switch(Ingame)
+end
+
+function love.keypressed(key)
+  if Gamestate.current() == Ingame and key == 'p' then
+    Gamestate.push(Pause)
+  end
 end
