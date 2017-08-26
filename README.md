@@ -14,7 +14,7 @@ An attempt at pong with the LOVE engine
 
 ## Extra stuff to try
 
-* [ ] splash menu
+* [x] splash menu
 * [ ] pause menu
 * [ ] menu
 * [ ] sounds

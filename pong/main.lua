@@ -1,6 +1,7 @@
 local Gamestate = require 'pong.vendor.hump.gamestate'
+local Timer = require 'pong.vendor.hump.timer'
 
-local Ingame = require 'pong.gamestates.ingame'
+local Splash = require 'pong.gamestates.splash'
 local Pause = require 'pong.gamestates.pause'
 
 -- Lua's random number generator doesn't have enough entropy to start.
@@ -15,7 +16,11 @@ end
 function love.load()
   init_random()
   Gamestate.registerEvents()
-  Gamestate.switch(Ingame)
+  Gamestate.switch(Splash)
+end
+
+function love.update(dt)
+  Timer.update(dt)
 end
 
 function love.keypressed(key)
