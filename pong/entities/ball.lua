@@ -10,9 +10,9 @@ Ball.READY_STATE = 1
 Ball.MOVING_STATE = 2
 Ball.SCORING_STATE = 3
 
-Ball.RADIUS = 32
+Ball.RADIUS = 16
 Ball.DIAMETER = Ball.RADIUS * 2 -- For bounding box calculation
-local SPEED = 128
+local SPEED = 256
 
 -- Use a set of angles to keep the game interesting.
 -- No one wants to play pong when the angle is 89 degrees.
