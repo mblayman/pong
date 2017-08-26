@@ -1,8 +1,9 @@
 local Gamestate = require 'pong.vendor.hump.gamestate'
 local Timer = require 'pong.vendor.hump.timer'
 
-local Splash = require 'pong.gamestates.splash'
+local Ingame = require 'pong.gamestates.ingame'
 local Pause = require 'pong.gamestates.pause'
+local Splash = require 'pong.gamestates.splash'
 
 -- Lua's random number generator doesn't have enough entropy to start.
 -- Without some initial calls, the first random is always the same.
