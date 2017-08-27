@@ -1,6 +1,5 @@
 local Camera = require 'pong.vendor.hump.camera'
-
-local Ingame = {}
+local Signal = require 'pong.vendor.hump.signal'
 
 local Goal = require 'pong.goal'
 local KeyState = require 'pong.key_state'
@@ -8,7 +7,13 @@ local Scene = require 'pong.scene'
 local Ball = require 'pong.entities.ball'
 local Paddle = require 'pong.entities.paddle'
 
-local camera = Camera(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+local Ingame = {}
+
+Ingame.BOUNCE_INTENSITY = 5
+Ingame.CAMERA_INTENSITY_FALLOFF = 0.2
+Ingame.CENTER_X = love.graphics.getWidth() / 2
+Ingame.CENTER_Y = love.graphics.getHeight() / 2
+
 local entities = {}
 local key_state = KeyState()
 local scene = Scene()
@@ -28,7 +33,16 @@ local function make_paddles()
          Paddle(right_paddle_x, paddle_y, 'right_player_up', 'right_player_down')
 end
 
+function Ingame:handle_bounce()
+  self.camera_intensity = self.camera_intensity + Ingame.BOUNCE_INTENSITY
+end
+
 function Ingame:init()
+  self.camera = Camera(Ingame.CENTER_X, CENTER_Y)
+  self.camera_intensity = 0
+
+  Signal.register('bounce', function() self:handle_bounce() end)
+
   local left_goal, right_goal = make_goals()
   scene:add_goal(left_goal)
   scene:add_goal(right_goal)
@@ -48,6 +62,16 @@ function Ingame:update(dt)
   end
 end
 
+-- Update the position of the camera. This adds screen shaking.
+function Ingame:update_camera()
+  if self.camera_intensity > 0 then
+    self.camera_intensity = math.max(0, self.camera_intensity - Ingame.CAMERA_INTENSITY_FALLOFF)
+  end
+  self.camera:lookAt(
+    Ingame.CENTER_X + math.random(-self.camera_intensity, self.camera_intensity),
+    Ingame.CENTER_Y + math.random(-self.camera_intensity, self.camera_intensity))
+end
+
 function Ingame:draw_court()
   -- Draw the background.
   local mid_x = love.graphics.getWidth() / 2
@@ -60,7 +84,8 @@ function Ingame:draw_court()
 end
 
 function Ingame:draw()
-  camera:draw(Ingame.draw_court)
+  self:update_camera()
+  self.camera:draw(Ingame.draw_court)
 end
 
 return Ingame

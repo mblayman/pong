@@ -1,3 +1,5 @@
+local Signal = require 'pong.vendor.hump.signal'
+
 local Constants = require 'pong.constants'
 local Court = require 'pong.court'
 
@@ -55,6 +57,7 @@ function Ball:update(dt, key_state)
   elseif self.state == Ball.MOVING_STATE then
     if self:collide_paddles() then
       self.x_direction = self.x_direction * Constants.REVERSE
+      Signal.emit('bounce')
     elseif self:collide_goals() then
       self.state = Ball.SCORING_STATE
     end
@@ -101,8 +104,10 @@ function Ball:update_collide_vertical()
 
   if bbox.y <= Court.TOP then
     self.y_direction = self.y_direction * Constants.REVERSE
+    Signal.emit('bounce')
   elseif bbox.y + bbox.h >= Court.BOTTOM then
     self.y_direction = self.y_direction * Constants.REVERSE
+    Signal.emit('bounce')
   end
 
 end

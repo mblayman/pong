@@ -20,4 +20,4 @@ An attempt at pong with the LOVE engine
 * [ ] sounds
 * [ ] sprites
 * [ ] winning conditions
-* [ ] camera shake, why not? use camera, timer, and signal
+* [x] camera shake, why not? use camera, timer, and signal
