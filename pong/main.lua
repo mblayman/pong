@@ -28,4 +28,8 @@ function love.keypressed(key)
   if Gamestate.current() == Ingame and key == 'p' then
     Gamestate.push(Pause)
   end
+
+  if key == 'escape' then
+    love.event.quit()
+  end
 end

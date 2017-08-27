@@ -1,3 +1,5 @@
+local Camera = require 'pong.vendor.hump.camera'
+
 local Ingame = {}
 
 local Goal = require 'pong.goal'
@@ -6,6 +8,7 @@ local Scene = require 'pong.scene'
 local Ball = require 'pong.entities.ball'
 local Paddle = require 'pong.entities.paddle'
 
+local camera = Camera(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 local entities = {}
 local key_state = KeyState()
 local scene = Scene()
@@ -26,7 +29,7 @@ local function make_paddles()
 end
 
 function Ingame:init()
-  left_goal, right_goal = make_goals()
+  local left_goal, right_goal = make_goals()
   scene:add_goal(left_goal)
   scene:add_goal(right_goal)
 
@@ -45,7 +48,7 @@ function Ingame:update(dt)
   end
 end
 
-function Ingame:draw()
+function Ingame:draw_court()
   -- Draw the background.
   local mid_x = love.graphics.getWidth() / 2
   love.graphics.line(mid_x, 0, mid_x, love.graphics.getHeight())
@@ -54,6 +57,10 @@ function Ingame:draw()
   for i, entity in pairs(entities) do
     entity:draw()
   end
+end
+
+function Ingame:draw()
+  camera:draw(Ingame.draw_court)
 end
 
 return Ingame
