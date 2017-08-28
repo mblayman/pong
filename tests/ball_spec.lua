@@ -59,6 +59,12 @@ describe('Ball', function()
     assert.are.equal(0, ball.y_speed)
   end)
 
+  it('did not just bounce x', function()
+    local ball = Ball()
+
+    assert.is_false(ball.just_x_bounced)
+  end)
+
   it('did not just bounce y', function()
     local ball = Ball()
 
@@ -92,7 +98,7 @@ describe('Ball', function()
     ball.y = 0
     ball.y_direction = Constants.UP
 
-    ball:update_collide_vertical(dt)
+    ball:update_collide_y(dt)
 
     assert.are.equal(Constants.DOWN, ball.y_direction)
   end)
@@ -102,7 +108,7 @@ describe('Ball', function()
     ball.y = love.graphics.getHeight()
     ball.y_direction = Constants.DOWN
 
-    ball:update_collide_vertical(dt)
+    ball:update_collide_y(dt)
 
     assert.are.equal(Constants.UP, ball.y_direction)
   end)
@@ -113,7 +119,7 @@ describe('Ball', function()
     ball.y_direction = Constants.DOWN
     ball.just_y_bounced = true
 
-    ball:update_collide_vertical(dt)
+    ball:update_collide_y(dt)
 
     assert.are.equal(Constants.DOWN, ball.y_direction)
   end)
@@ -178,6 +184,22 @@ describe('Ball', function()
       ball:update(dt, {})
 
       assert.are.equal(Constants.RIGHT, ball.x_direction)
+    end)
+
+    it('does nothing in the x bounce cooldown', function()
+      local paddle = Paddle(0, 0)
+      local scene = Scene()
+      scene:add_paddle(paddle)
+      local ball = Ball(scene)
+      ball.x = 0
+      ball.y = 0
+      ball.x_direction = Constants.LEFT
+      ball.state = Ball.MOVING_STATE
+      ball.just_x_bounced = true
+
+      ball:update(dt, {})
+
+      assert.are.equal(Constants.LEFT, ball.x_direction)
     end)
 
     it('scores a goal', function()

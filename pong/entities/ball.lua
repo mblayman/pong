@@ -49,6 +49,7 @@ local function construct(cls, scene)
   -- Without any buffer, two collisions can occur back to back.
   -- This leads to a cycle where the ball starts toggling back
   -- and forth in direction and gets "stuck."
+  self.just_x_bounced = false
   self.just_y_bounced = false
 
   return self
@@ -64,20 +65,14 @@ function Ball:update(dt, key_state)
     end
 
   elseif self.state == Ball.MOVING_STATE then
-    if self:collide_paddles() then
-      self.x_direction = self.x_direction * Constants.REVERSE
-      Signal.emit('bounce')
-    elseif self:collide_goals() then
-      self.state = Ball.SCORING_STATE
-    end
-
-    self:update_collide_vertical(dt)
+    self:update_collide_x(dt)
+    self:update_collide_y(dt)
 
     self.x = self.x + self.x_speed * self.x_direction * dt
     self.y = self.y + self.y_speed * self.y_direction * dt
 
   elseif self.state == Ball.SCORING_STATE then
-    self:update_collide_vertical(dt)
+    self:update_collide_y(dt)
 
     self.x = self.x + self.x_speed * self.x_direction * dt
     self.y = self.y + self.y_speed * self.y_direction * dt
@@ -107,8 +102,25 @@ function Ball:collide_goals()
   return false
 end
 
+-- Update if the ball collides with the paddles or goals.
+function Ball:update_collide_x(dt)
+  if self.just_x_bounced then
+    return
+  end
+
+  self.just_x_bounced = self:collide_paddles()
+
+  if self.just_x_bounced then
+    self.x_direction = self.x_direction * Constants.REVERSE
+    Signal.emit('bounce')
+    Timer.after(Ball.BOUNCE_COOLDOWN * dt, function() self.just_x_bounced = false end)
+  elseif self:collide_goals() then
+    self.state = Ball.SCORING_STATE
+  end
+end
+
 -- Update if the ball collides with the top or bottom.
-function Ball:update_collide_vertical(dt)
+function Ball:update_collide_y(dt)
   if self.just_y_bounced then
     return
   end
