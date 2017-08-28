@@ -1,4 +1,5 @@
 local Signal = require 'pong.vendor.hump.signal'
+local Timer = require 'pong.vendor.hump.timer'
 
 local Constants = require 'pong.constants'
 local Court = require 'pong.court'
@@ -14,6 +15,7 @@ Ball.SCORING_STATE = 3
 
 Ball.RADIUS = 16
 Ball.DIAMETER = Ball.RADIUS * 2 -- For bounding box calculation
+Ball.BOUNCE_COOLDOWN = 5
 local SPEED = 256
 
 -- Use a set of angles to keep the game interesting.
@@ -42,6 +44,13 @@ local function construct(cls, scene)
   self.y_direction = Constants.DOWN
   self.y_speed = 0
 
+  -- Extra state is needed for a bounce cooldown.
+  -- When the ball collides with a wall, the direction is flipped.
+  -- Without any buffer, two collisions can occur back to back.
+  -- This leads to a cycle where the ball starts toggling back
+  -- and forth in direction and gets "stuck."
+  self.just_y_bounced = false
+
   return self
 end
 setmetatable(Ball, {__call = construct})
@@ -62,13 +71,13 @@ function Ball:update(dt, key_state)
       self.state = Ball.SCORING_STATE
     end
 
-    self:update_collide_vertical()
+    self:update_collide_vertical(dt)
 
     self.x = self.x + self.x_speed * self.x_direction * dt
     self.y = self.y + self.y_speed * self.y_direction * dt
 
   elseif self.state == Ball.SCORING_STATE then
-    self:update_collide_vertical()
+    self:update_collide_vertical(dt)
 
     self.x = self.x + self.x_speed * self.x_direction * dt
     self.y = self.y + self.y_speed * self.y_direction * dt
@@ -99,15 +108,19 @@ function Ball:collide_goals()
 end
 
 -- Update if the ball collides with the top or bottom.
-function Ball:update_collide_vertical()
+function Ball:update_collide_vertical(dt)
+  if self.just_y_bounced then
+    return
+  end
+
   local bbox = self:get_bbox()
 
-  if bbox.y <= Court.TOP then
+  self.just_y_bounced = bbox.y <= Court.TOP or bbox.y + bbox.h >= Court.BOTTOM
+
+  if self.just_y_bounced then
     self.y_direction = self.y_direction * Constants.REVERSE
     Signal.emit('bounce')
-  elseif bbox.y + bbox.h >= Court.BOTTOM then
-    self.y_direction = self.y_direction * Constants.REVERSE
-    Signal.emit('bounce')
+    Timer.after(Ball.BOUNCE_COOLDOWN * dt, function() self.just_y_bounced = false end)
   end
 
 end
