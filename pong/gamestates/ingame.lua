@@ -27,6 +27,8 @@ end
 
 -- Make the left and right paddles.
 local function make_paddles()
+  Paddle.init()
+
   local paddle_y = love.graphics.getHeight() / 2 - Paddle.HEIGHT / 2
   local right_paddle_x = love.graphics.getWidth() - Paddle.WIDTH
   return Paddle(0, paddle_y, 'left_player_up', 'left_player_down'),

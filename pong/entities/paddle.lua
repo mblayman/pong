@@ -1,3 +1,5 @@
+local anim8 = require 'pong.vendor.anim8.anim8'
+
 local Constants = require 'pong.constants'
 local Court = require 'pong.court'
 
@@ -9,6 +11,14 @@ Paddle.HEIGHT = 128
 Paddle.WIDTH = 16
 
 Paddle.SPEED = 256
+
+function Paddle.init()
+  Paddle.image = love.graphics.newImage('assets/images/paddle.png')
+  -- Avoid linear interpolation on the image to get the crisp pixels.
+  Paddle.image:setFilter('nearest', 'nearest')
+  Paddle.grid = anim8.newGrid(
+    Paddle.WIDTH, Paddle.HEIGHT, Paddle.image:getWidth(), Paddle.image:getHeight())
+end
 
 local function construct(cls, x, y, up_key, down_key)
   local self = setmetatable({}, Paddle)
@@ -23,6 +33,9 @@ local function construct(cls, x, y, up_key, down_key)
 
   self.y_direction = Constants.UP
 
+  self.animation = anim8.newAnimation(Paddle.grid('1-4', 1, '3-2', 1), 1)
+  self.animation:pauseAtStart()
+
   return self
 end
 setmetatable(Paddle, {__call = construct})
@@ -35,6 +48,8 @@ function Paddle:update(dt, key_state)
     self.y_direction = Constants.DOWN
     self:move(dt)
   end
+
+  self.animation:update(dt)
 end
 
 -- Check if the paddle is in contact with the top of the court.
@@ -65,7 +80,7 @@ function Paddle:move(dt)
 end
 
 function Paddle:draw()
-  love.graphics.rectangle('fill', self.x, self.y, Paddle.WIDTH, Paddle.HEIGHT)
+  self.animation:draw(Paddle.image, self.x, self.y)
 end
 
 return Paddle

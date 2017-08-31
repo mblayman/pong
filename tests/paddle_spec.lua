@@ -5,6 +5,10 @@ local Court = require 'pong.court'
 local Paddle = require 'pong.entities.paddle'
 
 describe('Paddle', function()
+  setup(function()
+    Paddle.init()
+  end)
+
   local dt = 1
 
   it('has a height', function()

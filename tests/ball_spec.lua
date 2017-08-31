@@ -7,6 +7,10 @@ local Ball = require 'pong.entities.ball'
 local Paddle = require 'pong.entities.paddle'
 
 describe('Ball', function()
+  setup(function()
+    Paddle.init()
+  end)
+
   local dt = 1
 
   it('has a ready state', function()
