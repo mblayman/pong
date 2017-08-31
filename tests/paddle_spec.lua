@@ -2,6 +2,7 @@ require 'tests.love_mock'
 
 local Constants = require 'pong.constants'
 local Court = require 'pong.court'
+local Scene = require 'pong.scene'
 local Paddle = require 'pong.entities.paddle'
 
 describe('Paddle', function()
@@ -54,7 +55,8 @@ describe('Paddle', function()
   end)
 
   it('moves up', function()
-    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down')
+    local scene = Scene()
+    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down', scene)
     paddle.y_direction = Constants.DOWN
 
     paddle:update(dt, { left_player_up = true })
@@ -64,7 +66,8 @@ describe('Paddle', function()
   end)
 
   it('moves down', function()
-    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down')
+    local scene = Scene()
+    local paddle = Paddle(1, 2, 'left_player_up', 'left_player_down', scene)
     paddle.y_direction = Constants.UP
 
     paddle:update(dt, { left_player_down = true })

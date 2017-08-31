@@ -3,6 +3,7 @@ local Timer = require 'pong.vendor.hump.timer'
 
 local Constants = require 'pong.constants'
 local Court = require 'pong.court'
+local Utils = require 'pong.utils'
 
 -- The ball that bounces back and forth.
 local Ball = {}
@@ -16,7 +17,7 @@ Ball.SCORING_STATE = 3
 Ball.RADIUS = 16
 Ball.DIAMETER = Ball.RADIUS * 2 -- For bounding box calculation
 Ball.BOUNCE_COOLDOWN = 5
-local SPEED = 256
+local SPEED = 512
 
 -- Use a set of angles to keep the game interesting.
 -- No one wants to play pong when the angle is 89 degrees.
@@ -140,15 +141,7 @@ end
 -- Check if the ball collided with another bounding box.
 function Ball:collide_box(other_bbox)
   local bbox = self:get_bbox()
-  -- Each test checks if the box is outside the other box.
-  -- The whole thing is negated because if the box is not
-  -- outside of the other box, then it must be a collision.
-  return not (
-    bbox.x > other_bbox.x + other_bbox.w or
-    bbox.x + bbox.w < other_bbox.x or
-    bbox.y > other_bbox.y + other_bbox.h or
-    bbox.y + bbox.h < other_bbox.y
-  )
+  return Utils.is_collision(bbox, other_bbox)
 end
 
 -- Get the bounding box.

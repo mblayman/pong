@@ -15,6 +15,12 @@ describe('Scene', function()
     assert.truthy(scene.paddles)
   end)
 
+  it('has balls', function()
+    local scene = Scene()
+
+    assert.truthy(scene.balls)
+  end)
+
   it('adds a goal', function()
     local goal = {}
     local scene = Scene()
@@ -31,5 +37,14 @@ describe('Scene', function()
     scene:add_paddle(paddle)
 
     assert.equal(paddle, scene.paddles[1])
+  end)
+
+  it('adds a ball', function()
+    local ball = {}
+    local scene = Scene()
+
+    scene:add_ball(ball)
+
+    assert.equal(ball, scene.balls[1])
   end)
 end)

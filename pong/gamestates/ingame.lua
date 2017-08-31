@@ -26,13 +26,13 @@ local function make_goals()
 end
 
 -- Make the left and right paddles.
-local function make_paddles()
+local function make_paddles(scene)
   Paddle.init()
 
   local paddle_y = love.graphics.getHeight() / 2 - Paddle.HEIGHT / 2
   local right_paddle_x = love.graphics.getWidth() - Paddle.WIDTH
-  return Paddle(0, paddle_y, 'left_player_up', 'left_player_down'),
-         Paddle(right_paddle_x, paddle_y, 'right_player_up', 'right_player_down')
+  return Paddle(0, paddle_y, 'left_player_up', 'left_player_down', scene),
+         Paddle(right_paddle_x, paddle_y, 'right_player_up', 'right_player_down', scene)
 end
 
 function Ingame:handle_bounce()
@@ -49,11 +49,12 @@ function Ingame:init()
   scene:add_goal(left_goal)
   scene:add_goal(right_goal)
 
-  entities.left_paddle, entities.right_paddle = make_paddles()
+  entities.left_paddle, entities.right_paddle = make_paddles(scene)
   scene:add_paddle(entities.left_paddle)
   scene:add_paddle(entities.right_paddle)
 
   entities.ball = Ball(scene)
+  scene:add_ball(entities.ball)
 end
 
 function Ingame:update(dt)
