@@ -47,7 +47,8 @@ function Paddle:update(dt, key_state)
   if key_state[self.up_key] and not self:collide_top() then
     self.y_direction = Constants.UP
     self:move(dt)
-  elseif key_state[self.down_key] and not self:collide_bottom() then
+  end
+  if key_state[self.down_key] and not self:collide_bottom() then
     self.y_direction = Constants.DOWN
     self:move(dt)
   end
