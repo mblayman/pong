@@ -15,9 +15,11 @@ An attempt at pong with the LOVE engine
 ## Extra stuff to try
 
 * [x] splash menu
-* [ ] pause menu
+* [x] pause menu
 * [ ] menu
 * [ ] sounds
-* [ ] sprites
+* [x] sprites
 * [ ] winning conditions
 * [x] camera shake, why not? use camera, timer, and signal
+* [ ] ball tail
+* [ ] gamepad input
