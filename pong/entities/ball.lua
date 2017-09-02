@@ -9,11 +9,6 @@ local Utils = require 'pong.utils'
 local Ball = {}
 Ball.__index = Ball
 
--- States
-Ball.READY_STATE = 1
-Ball.MOVING_STATE = 2
-Ball.SCORING_STATE = 3
-
 Ball.RADIUS = 16
 Ball.DIAMETER = Ball.RADIUS * 2 -- For bounding box calculation
 Ball.BOUNCE_COOLDOWN = 5
@@ -57,28 +52,34 @@ local function construct(cls, scene)
 end
 setmetatable(Ball, {__call = construct})
 
-function Ball:update(dt, key_state)
-  if self.state == Ball.READY_STATE then
-    if key_state['start'] then
-      self.state = Ball.MOVING_STATE
-      self.x_direction = Constants.X_DIRECTIONS[math.random(#Constants.X_DIRECTIONS)]
-      self:set_speeds()
-    end
-
-  elseif self.state == Ball.MOVING_STATE then
-    self:update_collide_x(dt)
-    self:update_collide_y(dt)
-
-    self.x = self.x + self.x_speed * self.x_direction * dt
-    self.y = self.y + self.y_speed * self.y_direction * dt
-
-  elseif self.state == Ball.SCORING_STATE then
-    self:update_collide_y(dt)
-
-    self.x = self.x + self.x_speed * self.x_direction * dt
-    self.y = self.y + self.y_speed * self.y_direction * dt
-
+-- READY_STATE is the start of the game where the ball is waiting in the center.
+function Ball.READY_STATE(self, dt, key_state)
+  if key_state['start'] then
+    self.state = Ball.MOVING_STATE
+    self.x_direction = Constants.X_DIRECTIONS[math.random(#Constants.X_DIRECTIONS)]
+    self:set_speeds()
   end
+end
+
+-- MOVING_STATE is when the ball is in play.
+function Ball.MOVING_STATE(self, dt, key_state)
+  self:update_collide_x(dt)
+  self:update_collide_y(dt)
+
+  self.x = self.x + self.x_speed * self.x_direction * dt
+  self.y = self.y + self.y_speed * self.y_direction * dt
+end
+
+-- SCORING_STATE is after the ball reached a goal.
+function Ball.SCORING_STATE(self, dt, key_state)
+  self:update_collide_y(dt)
+
+  self.x = self.x + self.x_speed * self.x_direction * dt
+  self.y = self.y + self.y_speed * self.y_direction * dt
+end
+
+function Ball:update(dt, key_state)
+  self.state(self, dt, key_state)
 end
 
 -- Check if the ball collides with a paddle.
