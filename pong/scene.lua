@@ -24,4 +24,8 @@ function Scene:add_paddle(paddle)
   table.insert(self.paddles, paddle)
 end
 
+-- TODO: add_entity
+-- TODO: BallBlur
+-- TODO: unit test destroy system.
+
 return Scene

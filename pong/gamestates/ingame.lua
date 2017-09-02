@@ -6,6 +6,7 @@ local KeyState = require 'pong.key_state'
 local Scene = require 'pong.scene'
 local Ball = require 'pong.entities.ball'
 local Paddle = require 'pong.entities.paddle'
+local destroy = require 'pong.systems.destroy'
 
 local Ingame = {}
 
@@ -49,12 +50,15 @@ function Ingame:init()
   scene:add_goal(left_goal)
   scene:add_goal(right_goal)
 
-  entities.left_paddle, entities.right_paddle = make_paddles(scene)
-  scene:add_paddle(entities.left_paddle)
-  scene:add_paddle(entities.right_paddle)
+  local left_paddle, right_paddle = make_paddles(scene)
+  table.insert(entities, left_paddle)
+  table.insert(entities, right_paddle)
+  scene:add_paddle(left_paddle)
+  scene:add_paddle(right_paddle)
 
-  entities.ball = Ball(scene)
-  scene:add_ball(entities.ball)
+  local ball = Ball(scene)
+  table.insert(entities, ball)
+  scene:add_ball(ball)
 end
 
 function Ingame:update(dt)
@@ -62,6 +66,11 @@ function Ingame:update(dt)
 
   for i, entity in pairs(entities) do
     entity:update(dt, key_state)
+  end
+
+  -- Destroy in reverse for proper table cleanup.
+  for i = #entities, 1, -1 do
+    destroy(entities[i], entities, i)
   end
 end
 
