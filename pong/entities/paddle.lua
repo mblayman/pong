@@ -54,24 +54,12 @@ function Paddle:update(dt, key_state)
     self:move(dt)
   end
 
-  if self:collide_balls() then
+  if Utils.has_any_collision(self, self.scene.balls) then
     self.animation:gotoFrame(1)
     self.animation:resume()
   end
 
   self.animation:update(dt)
-end
-
--- Check if the paddle collides with a ball.
-function Paddle:collide_balls()
-  local bbox = self:get_bbox()
-  for i, ball in pairs(self.scene.balls) do
-    if Utils.is_collision(bbox, ball:get_bbox()) then
-      return true
-    end
-  end
-
-  return false
 end
 
 -- Check if the paddle is in contact with the top of the court.

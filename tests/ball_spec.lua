@@ -128,16 +128,6 @@ describe('Ball', function()
     assert.are.equal(Constants.DOWN, ball.y_direction)
   end)
 
-  it('collides with another box', function()
-    local paddle = Paddle(0, 0)
-    local ball = Ball()
-    ball.x = 0
-    ball.y = 0
-
-    local collided = ball:collide_box(paddle:get_bbox())
-    assert.is_true(collided)
-  end)
-
   describe('on start', function()
     local key_state = { start = true }
 

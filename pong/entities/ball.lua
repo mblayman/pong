@@ -82,41 +82,19 @@ function Ball:update(dt, key_state)
   self.state(self, dt, key_state)
 end
 
--- Check if the ball collides with a paddle.
-function Ball:collide_paddles()
-  for i, paddle in pairs(self.scene.paddles) do
-    if self:collide_box(paddle:get_bbox()) then
-      return true
-    end
-  end
-
-  return false
-end
-
--- Check if the ball collides with a goal.
-function Ball:collide_goals()
-  for i, goal in pairs(self.scene.goals) do
-    if self:collide_box(goal:get_bbox()) then
-      return true
-    end
-  end
-
-  return false
-end
-
 -- Update if the ball collides with the paddles or goals.
 function Ball:update_collide_x(dt)
   if self.just_x_bounced then
     return
   end
 
-  self.just_x_bounced = self:collide_paddles()
+  self.just_x_bounced = Utils.has_any_collision(self, self.scene.paddles)
 
   if self.just_x_bounced then
     self.x_direction = self.x_direction * Constants.REVERSE
     Signal.emit('bounce')
     Timer.after(Ball.BOUNCE_COOLDOWN * dt, function() self.just_x_bounced = false end)
-  elseif self:collide_goals() then
+  elseif Utils.has_any_collision(self, self.scene.goals) then
     self.state = Ball.SCORING_STATE
   end
 end
@@ -136,13 +114,6 @@ function Ball:update_collide_y(dt)
     Signal.emit('bounce')
     Timer.after(Ball.BOUNCE_COOLDOWN * dt, function() self.just_y_bounced = false end)
   end
-
-end
-
--- Check if the ball collided with another bounding box.
-function Ball:collide_box(other_bbox)
-  local bbox = self:get_bbox()
-  return Utils.is_collision(bbox, other_bbox)
 end
 
 -- Get the bounding box.
