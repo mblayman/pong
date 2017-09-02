@@ -2,6 +2,14 @@
 
 An attempt at pong with the LOVE engine
 
+Try it out:
+
+```bash
+$ # Install LOVE
+$ make  # This will fetch the dependencies.
+$ love pong
+```
+
 ## Things to make
 
 * [x] a background with middle dividing line
