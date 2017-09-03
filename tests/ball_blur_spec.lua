@@ -1,3 +1,5 @@
+local Timer = require 'pong.vendor.hump.timer'
+
 require 'tests.love_mock'
 
 local BallBlur = require 'pong.entities.ball_blur'
@@ -35,14 +37,14 @@ describe('BallBlur', function()
     local ball_blur = BallBlur(42, 24, 16)
     local previous_opacity = ball_blur.opacity
 
-    ball_blur:update()
+    Timer.update(1)
 
     assert.is_true(previous_opacity > ball_blur.opacity)
   end)
 
   it('destroys when opacity drops to zero', function()
     local ball_blur = BallBlur(42, 24, 16)
-    ball_blur.opacity = BallBlur.OPACITY_FADE - 1
+    ball_blur.opacity = 0
 
     ball_blur:update()
 

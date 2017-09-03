@@ -1,3 +1,5 @@
+local Timer = require 'pong.vendor.hump.timer'
+
 -- The blur that trails behind the ball.
 local BallBlur = {}
 BallBlur.__index = BallBlur
@@ -14,15 +16,14 @@ local function construct(cls, x, y, radius)
   self.y = y
   self.radius = radius
 
+  Timer.tween(1, self, {opacity = 0}, 'out-quint')
+
   return self
 end
 setmetatable(BallBlur, {__call = construct})
 
 function BallBlur:update(dt, key_state)
-  local next_opacity = self.opacity - BallBlur.OPACITY_FADE
-  if next_opacity > 0 then
-    self.opacity = next_opacity
-  else
+  if self.opacity <= 0 then
     self.destroy = true
   end
 end
