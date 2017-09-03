@@ -48,7 +48,6 @@ local function construct(cls, scene)
   -- This leads to a cycle where the ball starts toggling back
   -- and forth in direction and gets "stuck."
   self.just_x_bounced = false
-  self.just_y_bounced = false
 
   self.blur_counter = 0
 
@@ -115,18 +114,22 @@ end
 
 -- Update if the ball collides with the top or bottom.
 function Ball:update_collide_y(dt)
-  if self.just_y_bounced then
-    return
-  end
-
+  local bounced = false
   local bbox = self:get_bbox()
 
-  self.just_y_bounced = bbox.y <= Court.TOP or bbox.y + bbox.h >= Court.BOTTOM
+  -- On collision, immediately adjust y so that there isn't any double
+  -- collision stuff going on that will cause direction flipping.
+  if bbox.y < Court.TOP then
+    bounced = true
+    self.y = Court.TOP + Ball.RADIUS
+  elseif bbox.y + bbox.h > Court.BOTTOM then
+    bounced = true
+    self.y = Court.BOTTOM - Ball.RADIUS
+  end
 
-  if self.just_y_bounced then
+  if bounced then
     self.y_direction = self.y_direction * Constants.REVERSE
     Signal.emit('bounce')
-    Timer.after(Ball.BOUNCE_COOLDOWN * dt, function() self.just_y_bounced = false end)
   end
 end
 

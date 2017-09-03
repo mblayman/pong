@@ -79,12 +79,6 @@ describe('Ball', function()
     assert.is_false(ball.just_x_bounced)
   end)
 
-  it('did not just bounce y', function()
-    local ball = Ball()
-
-    assert.is_false(ball.just_y_bounced)
-  end)
-
   it('sets speeds', function()
     local ball = Ball()
 
@@ -144,17 +138,6 @@ describe('Ball', function()
     ball:update_collide_y(dt)
 
     assert.are.equal(Constants.UP, ball.y_direction)
-  end)
-
-  it('does nothing in the y bounce cooldown', function()
-    local ball = Ball()
-    ball.y = love.graphics.getHeight()
-    ball.y_direction = Constants.DOWN
-    ball.just_y_bounced = true
-
-    ball:update_collide_y(dt)
-
-    assert.are.equal(Constants.DOWN, ball.y_direction)
   end)
 
   describe('on start', function()

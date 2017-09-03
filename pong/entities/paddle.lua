@@ -65,13 +65,29 @@ end
 -- Check if the paddle is in contact with the top of the court.
 function Paddle:collide_top()
   bbox = self:get_bbox()
-  return bbox.y <= Court.TOP
+
+  -- Keep the paddle in the court at all times. If it went over in an update,
+  -- set it back within the court.
+  if bbox.y < Court.TOP then
+    self.y = Court.TOP
+    return true
+  end
+
+  return bbox.y == Court.TOP
 end
 
 -- Check if the paddle is in contact with the bottom of the court.
 function Paddle:collide_bottom()
   bbox = self:get_bbox()
-  return bbox.y + bbox.h >= Court.BOTTOM
+
+  -- Keep the paddle in the court at all times. If it went over in an update,
+  -- set it back within the court.
+  if bbox.y + bbox.h > Court.BOTTOM then
+    self.y = Court.BOTTOM - Paddle.HEIGHT
+    return true
+  end
+
+  return bbox.y + bbox.h == Court.BOTTOM
 end
 
 -- Get the bounding box.
