@@ -4,6 +4,7 @@ local Timer = require 'pong.vendor.hump.timer'
 local Constants = require 'pong.constants'
 local Court = require 'pong.court'
 local Utils = require 'pong.utils'
+local BallBlur = require 'pong.entities.ball_blur'
 
 -- The ball that bounces back and forth.
 local Ball = {}
@@ -11,6 +12,7 @@ Ball.__index = Ball
 
 Ball.RADIUS = 16
 Ball.DIAMETER = Ball.RADIUS * 2 -- For bounding box calculation
+Ball.BLUR_SPAWN_FREQUENCY = 3
 Ball.BOUNCE_COOLDOWN = 5
 local SPEED = 512
 
@@ -48,6 +50,8 @@ local function construct(cls, scene)
   self.just_x_bounced = false
   self.just_y_bounced = false
 
+  self.blur_counter = 0
+
   return self
 end
 setmetatable(Ball, {__call = construct})
@@ -65,6 +69,7 @@ end
 function Ball.MOVING_STATE(self, dt, key_state)
   self:update_collide_x(dt)
   self:update_collide_y(dt)
+  self:spawn_blur()
 
   self.x = self.x + self.x_speed * self.x_direction * dt
   self.y = self.y + self.y_speed * self.y_direction * dt
@@ -73,6 +78,7 @@ end
 -- SCORING_STATE is after the ball reached a goal.
 function Ball.SCORING_STATE(self, dt, key_state)
   self:update_collide_y(dt)
+  self:spawn_blur()
 
   self.x = self.x + self.x_speed * self.x_direction * dt
   self.y = self.y + self.y_speed * self.y_direction * dt
@@ -80,6 +86,14 @@ end
 
 function Ball:update(dt, key_state)
   self.state(self, dt, key_state)
+end
+
+-- Create a new ball blur periodically.
+function Ball:spawn_blur()
+  if self.blur_counter == 0 then
+    self.scene:add_entity(BallBlur(self.x, self.y, Ball.RADIUS))
+  end
+  self.blur_counter = (self.blur_counter + 1 ) % Ball.BLUR_SPAWN_FREQUENCY
 end
 
 -- Update if the ball collides with the paddles or goals.

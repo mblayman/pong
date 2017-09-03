@@ -25,6 +25,10 @@ describe('Ball', function()
     assert.truthy(Ball.SCORING_STATE)
   end)
 
+  it('has a blur spawn frequency', function()
+    assert.truthy(Ball.BLUR_SPAWN_FREQUENCY)
+  end)
+
   it('gets a scene', function()
     local scene = {}
     local ball = Ball(scene)
@@ -63,6 +67,12 @@ describe('Ball', function()
     assert.are.equal(0, ball.y_speed)
   end)
 
+  it('has default blur counter', function()
+    local ball = Ball()
+
+    assert.are.equal(0, ball.blur_counter)
+  end)
+
   it('did not just bounce x', function()
     local ball = Ball()
 
@@ -79,9 +89,28 @@ describe('Ball', function()
     local ball = Ball()
 
     ball:set_speeds()
-
-    assert.are_not.equal(0, ball.x_speed)
     assert.are_not.equal(0, ball.y_speed)
+  end)
+
+  it('creates a ball blur', function()
+    local scene = Scene()
+    local ball = Ball(scene)
+
+    ball:spawn_blur()
+
+    assert.are.equal(1, #scene.entities)
+    assert.are.equal(1, ball.blur_counter)
+  end)
+
+  it('skips blur creation when in between frequency steps', function()
+    local scene = Scene()
+    local ball = Ball(scene)
+    ball.blur_counter = 1
+
+    ball:spawn_blur()
+
+    assert.are.equal(0, #scene.entities)
+    assert.are.equal(2, ball.blur_counter)
   end)
 
   it('gets a bounding box', function()
