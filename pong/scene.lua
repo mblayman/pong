@@ -26,6 +26,5 @@ end
 
 -- TODO: add_entity
 -- TODO: BallBlur
--- TODO: unit test destroy system.
 
 return Scene
