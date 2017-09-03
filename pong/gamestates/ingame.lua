@@ -6,7 +6,6 @@ local KeyState = require 'pong.key_state'
 local Scene = require 'pong.scene'
 local Ball = require 'pong.entities.ball'
 local Paddle = require 'pong.entities.paddle'
-local destroy = require 'pong.systems.destroy'
 
 local Ingame = {}
 
@@ -59,15 +58,7 @@ end
 
 function Ingame:update(dt)
   key_state:update()
-
-  for i, entity in pairs(scene.entities) do
-    entity:update(dt, key_state)
-  end
-
-  -- Destroy in reverse for proper table cleanup.
-  for i = #scene.entities, 1, -1 do
-    destroy(scene.entities[i], scene.entities, i)
-  end
+  scene:update(dt, key_state)
 end
 
 -- Update the position of the camera. This adds screen shaking.
@@ -86,9 +77,7 @@ function Ingame:draw_court()
   love.graphics.line(mid_x, 0, mid_x, love.graphics.getHeight())
 
   -- Draw the moving stuff.
-  for i, entity in pairs(scene.entities) do
-    entity:draw()
-  end
+  scene:draw()
 end
 
 function Ingame:draw()

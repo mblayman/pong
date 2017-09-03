@@ -1,3 +1,5 @@
+local destroy = require 'pong.systems.destroy'
+
 local Scene = {}
 Scene.__index = Scene
 
@@ -29,6 +31,24 @@ end
 function Scene:add_paddle(paddle)
   table.insert(self.paddles, paddle)
   self:add_entity(paddle)
+end
+
+-- Update the entities and run systems.
+function Scene:update(dt, key_state)
+  for i, entity in ipairs(self.entities) do
+    entity:update(dt, key_state)
+  end
+
+  -- Destroy in reverse for proper table cleanup.
+  for i = #self.entities, 1, -1 do
+    destroy(self.entities[i], self.entities, i)
+  end
+end
+
+function Scene:draw()
+  for i, entity in ipairs(self.entities) do
+    entity:draw()
+  end
 end
 
 -- TODO: BallBlur
