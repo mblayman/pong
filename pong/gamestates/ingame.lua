@@ -15,7 +15,6 @@ Ingame.CAMERA_INTENSITY_FALLOFF = 0.2
 Ingame.CENTER_X = love.graphics.getWidth() / 2
 Ingame.CENTER_Y = love.graphics.getHeight() / 2
 
-local entities = {}
 local key_state = KeyState()
 local scene = Scene()
 
@@ -51,26 +50,23 @@ function Ingame:init()
   scene:add_goal(right_goal)
 
   local left_paddle, right_paddle = make_paddles(scene)
-  table.insert(entities, left_paddle)
-  table.insert(entities, right_paddle)
   scene:add_paddle(left_paddle)
   scene:add_paddle(right_paddle)
 
   local ball = Ball(scene)
-  table.insert(entities, ball)
   scene:add_ball(ball)
 end
 
 function Ingame:update(dt)
   key_state:update()
 
-  for i, entity in pairs(entities) do
+  for i, entity in pairs(scene.entities) do
     entity:update(dt, key_state)
   end
 
   -- Destroy in reverse for proper table cleanup.
-  for i = #entities, 1, -1 do
-    destroy(entities[i], entities, i)
+  for i = #scene.entities, 1, -1 do
+    destroy(scene.entities[i], scene.entities, i)
   end
 end
 
@@ -90,7 +86,7 @@ function Ingame:draw_court()
   love.graphics.line(mid_x, 0, mid_x, love.graphics.getHeight())
 
   -- Draw the moving stuff.
-  for i, entity in pairs(entities) do
+  for i, entity in pairs(scene.entities) do
     entity:draw()
   end
 end

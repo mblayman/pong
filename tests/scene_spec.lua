@@ -43,6 +43,7 @@ describe('Scene', function()
     scene:add_ball(ball)
 
     assert.equal(ball, scene.balls[1])
+    assert.equal(ball, scene.entities[1])
   end)
 
   it('adds a goal', function()
@@ -61,5 +62,6 @@ describe('Scene', function()
     scene:add_paddle(paddle)
 
     assert.equal(paddle, scene.paddles[1])
+    assert.equal(paddle, scene.entities[1])
   end)
 end)

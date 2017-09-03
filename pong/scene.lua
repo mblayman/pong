@@ -19,6 +19,7 @@ end
 
 function Scene:add_ball(ball)
   table.insert(self.balls, ball)
+  self:add_entity(ball)
 end
 
 function Scene:add_goal(goal)
@@ -27,6 +28,7 @@ end
 
 function Scene:add_paddle(paddle)
   table.insert(self.paddles, paddle)
+  self:add_entity(paddle)
 end
 
 -- TODO: BallBlur
