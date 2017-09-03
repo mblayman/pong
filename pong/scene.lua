@@ -51,6 +51,4 @@ function Scene:draw()
   end
 end
 
--- TODO: BallBlur
-
 return Scene
